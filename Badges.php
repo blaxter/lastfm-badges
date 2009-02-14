@@ -1,75 +1,47 @@
 <?php
-/**
-  *
+
+/*******************************************************************************
 		Licensed under WTFPL - DoWhatTheFuckYouWant Public License
-		(c) Hugues Hiegel 2006-2008 <hugues@hiegel.fr>
-		
-		Thanks to Pavel Zbytovský - www.zby.cz
-			for saving me time with the MySQL stuff !
+		(c) Jesús García Sáez 2009-     <blaxter@gmail.com>
+		(c) Hugues Hiegel     2006-2008 <hugues@hiegel.fr>	
+*******************************************************************************/
 
+// get the parameters
+$username = $_GET['user' ];
+$type     = $_GET['type' ];
+$style    = $_GET['style'];
+$color    = $_GET['color'];
 
-CREATE TABLE `users` (
-	`username` varchar(100) NOT NULL,
-	`statsstart` bigint(11) NOT NULL,
-	`playcount` int(10) unsigned NOT NULL,
-	`lastupdate` bigint(11) unsigned NOT NULL,
-	PRIMARY KEY  (`username`)
-) ;
+include("Config.php"); // default values will be setted if they aren't defined
 
-CREATE TABLE `badges` (
-	`username` varchar(100) NOT NULL,
-	`type` varchar(100) NOT NULL,
-	`style` varchar(100) NOT NULL,
-	`color` varchar(100) NOT NULL,
-	`lastupdate` bigint(11) default NULL,
-	`hits` bigint(20) unsigned NOT NULL,
-	`lasthit` bigint(11) unsigned default NULL,
-	`png` longblob,
-	PRIMARY KEY  (`username`,`type`)
-);
-  
-  *
-  */
-
-/*get the parameters*/
-$Pathinfo=$_SERVER['PATH_INFO'];
-$pathinfo=explode("/", $Pathinfo);
-$script=explode("/", $_SERVER['SCRIPT_NAME']);
-
-$username=$pathinfo[1];
-$type=$pathinfo[2];
-$style=$pathinfo[3];
-$color=$pathinfo[4];
-
-include("Config.php");
-
-mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS);
-mysql_select_db(MYSQL_DB);
+mysql_connect( MYSQL_HOST, MYSQL_USER, MYSQL_PASS );
+mysql_select_db( MYSQL_DB );
 
 /*make cache data (array $data)*/
 $res = mysql_query("SELECT * FROM users WHERE username='" . gpc_addslashes(strtolower($username)) . "'");
 $data = mysql_fetch_assoc($res);
 
-if(($username AND !mysql_num_rows($res))
-OR ($data["lastupdate"] AND $data["lastupdate"]+CACHE < time()))
+if( ($username AND !mysql_num_rows($res)) OR
+    ($data["lastupdate"] AND $data["lastupdate"]+CACHE < time()) )
+{
   make_db_cache($username);
+}
 
-/*output image cache*/
-$Cache=CACHE_FOLDER."/Pictures/".strtolower(rawurlencode($username))."_$type-$style-$color.png";
-//if (strtolower($username)=="gugusse")
-	//$Cache="";
+// output image cache
+$Cache=CACHE_FOLDER."/".image_filename();
 
 clearstatcache();
 
-//if (is_file($Cache) AND (filemtime($Cache) >= $data['lastupdate'])){
-  //header("Location: ".$Cache); //its faster, but you should set CACHE_FOLDER = "."
-//}
+if (is_file($Cache) AND (filemtime($Cache) >= $data['lastupdate']))
+{
+  header("Location: ".CACHE_SUBFOLDER."./".image_filename());
+}
 
 /*-----------------------------------------------------------
   		Ok, now we are ready to create the image with GD.
 */
 
-$playcount = $data['playcount'];
+$playcount  = $data['playcount'];
 $statsstart = $data['statsstart'];
 
 $Lines = array();
@@ -87,7 +59,9 @@ if (! $playcount)
 }
 else
 {
-	$res = mysql_query("SELECT * FROM badges WHERE username='" . gpc_addslashes(strtolower($username)) . "' AND type='$type' AND style='$style' AND color='$color';");
+	$res = mysql_query("SELECT * FROM badges WHERE username='" . 
+	                   gpc_addslashes(strtolower($username)) . 
+	                   "' AND type='$type' AND style='$style' AND color='$color';");
 	$badge = mysql_fetch_assoc($res);
 
 	if (  !is_file($Cache)
@@ -206,7 +180,9 @@ else
 		}
 
 		foreach ($Lines as $Line)
-			$Line->font = "import/" . $Styles[$style];	
+		{
+			$Line->font = $Styles[$style];	
+		}
 
 		$y=0;
 		foreach ($Lines as $Line)
@@ -305,7 +281,10 @@ function make_db_cache($username){
 
 function touch_badge($username, $type, $style, $color)
 {
-	$res = mysql_query("SELECT hits FROM badges WHERE username='" . gpc_addslashes(strtolower($username)) . "' AND type='$type' AND style='$style' AND color='$color';");
+	$res = mysql_query( "SELECT hits FROM badges WHERE username='" . 
+	                    gpc_addslashes(strtolower($username)) . 
+	                    "' AND type='$type' AND style='$style' AND color='$color';"
+	);
 	$data = mysql_fetch_assoc($res);
 
 	if(mysql_num_rows($res))
@@ -318,11 +297,13 @@ function touch_badge($username, $type, $style, $color)
 	mysql_query($QUERY);
 }
 
-function gpc_addslashes($str){
+function gpc_addslashes($str)
+{
   return (get_magic_quotes_gpc() ? $str : addslashes($str));
 }
 
-function GetColor($color, $code) {
+function GetColor($color, $code)
+{
 	switch($color)
 	{
 		case "r":
@@ -337,6 +318,11 @@ function GetColor($color, $code) {
 	}
 }
 
+function image_filename()
+{
+	global $username, $type, $style, $color;
+	return strtolower(rawurlencode($username))."_$type-$style-$color.png";
+}
 
 class Text {
 	var $width = 0;
