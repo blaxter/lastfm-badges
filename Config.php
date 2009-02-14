@@ -6,7 +6,8 @@ define( WIDTH,    160,     true );
 define( HEIGHT,   20,      true );
 
 putenv( 'GDFONTPATH=' . realpath('./fonts/') );
-define( CACHE_FOLDER, realpath('./cache') );
+define( CACHE_SUBFOLDER, "cache", true);
+define( CACHE_FOLDER, realpath('./'.CACHE_SUBFOLDER) );
 
 include("Config.mysql.php");
  
