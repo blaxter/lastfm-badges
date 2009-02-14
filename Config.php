@@ -5,7 +5,7 @@ define( CACHE,    3600*48, true );
 define( WIDTH,    160,     true );
 define( HEIGHT,   20,      true );
 
-putenv( 'GDFONTPATH=' . realpath('./fonts') );
+putenv( 'GDFONTPATH=' . realpath('./fonts/') );
 define( CACHE_FOLDER, realpath('./cache') );
 
 include("Config.mysql.php");
@@ -13,7 +13,6 @@ include("Config.mysql.php");
 $Styles = array (
      "Modern"   => "It_wasn_t_me",
      "Letters"  => "JackOLantern",
-     "Romantic" => "Shelley_Volante",
      "Elegant"  => "ITCEdScr",
      "Screamy"  => "Junkyard",
      "Girlie"   => "girlw___",
@@ -25,7 +24,7 @@ $Styles = array (
      "Flamy"    => "Baileysc",
      "FaceLift" => "facerg__",
      "TypeO"    => "typeo___",
-     "Grindy"   => "Jack_the_Hipper",
+     "Grindy"   => "jackthehipper",
      "Horrorful"=> "horrh___"
 );
 
@@ -57,6 +56,6 @@ $Types = array(
 
 // DEFAULT VALUES //
 if ( $user == "" )                          $user  = "blaxter";
-if ( !array_key_exists( $style, $Styles ) ) $style = "TypeO"  ;
+if ( !array_key_exists( $style, $Styles ) ) $style = "Girlie" ;
 if ( !array_key_exists( $color, $Colors ) ) $color = "Red"    ;
 if ( !array_key_exists( $type,  $Types  ) ) $type  = "PerWeek";
