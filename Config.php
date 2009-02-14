@@ -55,8 +55,9 @@ $Types = array(
     "Trueness2" => "Trueness #2"
 );
 
-// DEFAULT VALUES //
-if ( $user == "" )                          $user  = "blaxter";
+// DEFAULT VALUES
+if ( !isset($user) || $user == "" )         $user  = "blaxter";
 if ( !array_key_exists( $style, $Styles ) ) $style = "Girlie" ;
 if ( !array_key_exists( $color, $Colors ) ) $color = "Red"    ;
 if ( !array_key_exists( $type,  $Types  ) ) $type  = "PerWeek";
+
