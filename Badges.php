@@ -36,11 +36,13 @@ clearstatcache();
 
 if (is_file($Cache) AND (filemtime($Cache) >= $data['lastupdate']))
 {
-  header("Location: ".CACHE_SUBFOLDER."./".image_filename());
+  $base_url = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/'));
+  header('Location: '.$base_url.'/'.CACHE_SUBFOLDER.'/'.image_filename());
+  exit;
 }
 
 /*-----------------------------------------------------------
-  		Ok, now we are ready to create the image with GD.
+      Ok, now we are ready to create the image with GD.
 */
 
 $playcount  = $data['playcount'];
