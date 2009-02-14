@@ -15,8 +15,8 @@ foreach ($Styles as $style => $font)
 	$black=imagecolorallocatealpha($img, 0, 0, 0, 0);
 
 	imagefilledrectangle($img, 0, 0, WIDTH, HEIGHT, $transparent);
-
-	imagettftext($img, 15, 0, 0, HEIGHT * 80/100 , $black, "import/".$font, $style);
+$font = "arial";
+	imagettftext($img, 15, 0, 0, HEIGHT * 80/100 , $black, $font, $style);
 
 	imagepng($img, "./$style.png");
 }
