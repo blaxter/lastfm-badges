@@ -1,10 +1,12 @@
 <?php
+/**
+ *  Licensed under WTFPL - DoWhatTheFuckYouWant Public License
+ *    - Jesús García Sáez 2009-     <blaxter@gmail.com>
+ *    - Hugues Hiegel     2006-2008 <hugues@hiegel.fr>
+ */
 
-/*******************************************************************************
-		Licensed under WTFPL - DoWhatTheFuckYouWant Public License
-		(c) Jesús García Sáez 2009-     <blaxter@gmail.com>
-		(c) Hugues Hiegel     2006-2008 <hugues@hiegel.fr>	
-*******************************************************************************/
+ini_set( 'display_errors', 1 );
+error_reporting(E_ALL | E_STRICT );
 
 // get the parameters
 $username = $_GET['user' ];
