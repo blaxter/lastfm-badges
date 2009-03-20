@@ -1,7 +1,7 @@
 <?
 
 define( "TRUENESS", 4000,    true );
-define( "CACHE",    3600*48, true );
+define( "CACHE",    3600,    true );
 define( "WIDTH",    160,     true );
 define( "HEIGHT",   20,      true );
 
