@@ -306,7 +306,8 @@ function make_db_cache( $username ){
                 switch ( $feed->name )
                 {
                     case "playcount":
-                        $data['playcount'] = intval( $feed->readString() );
+                        $feed->read();
+                        $data['playcount'] = intval( $feed->value );
                         break;
                     case "registered":
                     case "statsreset":
