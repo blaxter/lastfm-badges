@@ -197,8 +197,9 @@ function generate_lines_for( $data, $type, $username_orig )
 
 function mark_as_generated( $username, $type, $style, $color, $output_badge )
 {
-     $q = "REPLACE INTO badges (username, type, style, color, lastupdate, png)
-         VALUES ('$username','$type','$style','$color', ".time().", '$output_badge');"
+     $hits = badges_hits( $username, $type, $style, $color );
+     $q = "REPLACE INTO badges (username, type, style, color, lastupdate, png, hits)
+         VALUES ('$username','$type','$style','$color', ".time().", '$output_badge', $hits);"
      ;
      mysql_query($q);
 }
@@ -333,7 +334,7 @@ function make_db_cache( $username ){
     return ( $data['playcount'] != 0 ) ? $data : NULL;
 }
 
-function touch_badge( $username, $type, $style, $color )
+function badges_hits( $username, $type, $style, $color )
 {
     $res = mysql_query(
        "SELECT hits FROM badges
@@ -346,13 +347,18 @@ function touch_badge( $username, $type, $style, $color )
     if( mysql_num_rows( $res ) )
     {
         $data = mysql_fetch_assoc($res);
-        $hits = $data["hits"] + 1;
+        $hits = $data["hits"];
     }
     else
     {
         $hits = 0;
     }
+    return $hits;
+}
 
+function touch_badge( $username, $type, $style, $color )
+{
+    $hits = badges_hits( $username, $type, $style, $color ) + 1;
     mysql_query(
         "UPDATE badges SET hits=$hits, lasthit='".time()."'
          WHERE username='$username' AND type='$type'   AND
